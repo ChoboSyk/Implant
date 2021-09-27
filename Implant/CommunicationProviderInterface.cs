@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 // Interface for communication. Right now only HTTP implemented but I need to make DNS/WebSocket/Other?
-namespace Test23
+namespace Implant
 {
  
-    interface CommunicationProvider
+    interface CommunicationProviderInterface
     {
 
         public void keyExchangeSetup();
 
-        public string getConfig();
+        public Config getConfig();
 
-        public string getNextTask();
+        public Task getNextTask();
 
         public void updateTaskResult();
 

