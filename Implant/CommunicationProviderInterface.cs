@@ -17,7 +17,7 @@ namespace Implant
 
         public Task getNextTask();
 
-        public void updateTaskResult();
+        public void updateTaskResult(string UUID, string result);
 
         public string sendEncryptedRequest(string body, string endpoint);
     }

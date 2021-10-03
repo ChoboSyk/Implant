@@ -14,5 +14,7 @@ namespace Implant
 
         public string result { get; set; }
 
+        public string UUID { get; set; }
+
     }
 }

